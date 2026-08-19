@@ -1,0 +1,139 @@
+spring:
+  config:
+    # 本地真实凭据写入 application-local.yml；该文件已被 Git 忽略。
+    import: optional:classpath:application-local.yml
+  application:
+    name: AiAgent
+
+  datasource:
+    url: ${SUVIA_DB_URL:jdbc:postgresql://localhost:5432/ai_agent}
+    username: ${SUVIA_DB_USERNAME:postgres}
+    password: ${SUVIA_DB_PASSWORD:}
+  ai:
+    model:
+      chat: openai
+      embedding: openai
+    openai:
+      # 使用百炼 OpenAI-Compatible 接口；不要将包含真实密钥的文件提交到公开仓库。
+      api-key: ${DASHSCOPE_API_KEY:}
+      # Spring AI 1.1 会在此基础上追加 /v1/chat/completions 与 /v1/embeddings。
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: qwen-plus
+      embedding:
+        options:
+          model: text-embedding-v1
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        dimensions: 1536
+        distance-type: COSINE_DISTANCE
+        max-document-batch-size: 10000
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: default
+      paths-to-match: '/**'
+      packages-to-scan: org.suvia.controller
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+searchAPI:
+  api-key: ${SEARCH_API_KEY:}
+
+logging:
+  level:
+    org.springframework.ai: INFO
+    org.suvia: INFO
+
+suvia:
+  demo:
+    # 默认禁止“应用一启动就调用一次模型”；仅在专门演示时改为 true。
+    invoke-enabled: false
+  model-trace:
+    enabled: true
+    # 本地调试保留截断后的用户输入/模型输出，便于查询和评估；不会记录完整系统提示词。
+    capture-content: true
+    max-content-characters: 4000
+  intent:
+    # Uses Spring AI for semantic classification and falls back to deterministic rules on any failure.
+    llm-enabled: true
+    clarification-threshold: 0.5
+  security:
+    # Development remains usable without an identity provider. The prod profile forces this to true.
+    enabled: false
+    tenant-claim: tenant_id
+  rag:
+    ingest-only-if-empty: true
+    enable-in-memory-vector-store: false
+    hybrid:
+      schema-name: public
+      table-name: vector_store
+      vector-top-k: 15
+      keyword-top-k: 15
+      rrf-output-top-k: 8
+      rrf-k: 60
+      similarity-threshold: 0
+      multi-query-enabled: false
+    pdf:
+      pages-per-document: 0
+    text-split:
+      chunk-size-chars: 4000
+      chunk-overlap-chars: 280
+    semantic-split:
+      chunk-size-chars: 1700
+      chunk-overlap-chars: 200
+      min-chunk-chars: 280
+      embed-group-max-chars: 800
+      embed-group-max-sentences: 10
+      threshold: 0.74
+  chatmemory:
+    backend: jdbc
+    max-recent-messages: 40
+    max-recent-tokens: 6000
+    summarize-batch-size: 10
+    min-recent-messages: 4
+    max-summary-characters: 4000
+  tools:
+    security:
+      workspace-directory: tmp
+      network-timeout-seconds: 10
+      max-download-bytes: 26214400
+      max-web-content-chars: 100000
+      max-text-file-bytes: 2097152
+      allowed-domains: []
+      terminal:
+        enabled: false
+        timeout-seconds: 20
+        max-output-chars: 50000
+        allowed-executables: []
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:}
+  secret-key: ${MINIO_SECRET_KEY:}
+  bucket-name: ${MINIO_BUCKET:rag}

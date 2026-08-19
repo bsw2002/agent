@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Suvia AI 文献研究工作台">
+  <title>Suvia · 文献研究智能体</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M9 7.5h10.5a4.5 4.5 0 0 1 0 9H13a4 4 0 1 0 0 8h10"/><circle cx="9" cy="7.5" r="2.5"/><circle cx="23" cy="24.5" r="2.5"/></svg>
+        </div>
+        <div><strong>Suvia</strong><span>Research Agent</span></div>
+      </div>
+
+      <button class="new-chat" id="newChatButton" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        新建研究会话
+        <kbd>⌘ K</kbd>
+      </button>
+
+      <nav class="primary-nav" aria-label="主导航">
+        <button class="nav-item active" type="button" data-view="chat">
+          <svg viewBox="0 0 24 24"><path d="M7 18.5 3.5 21v-5A8.5 8.5 0 1 1 7 18.5Z"/></svg>
+          智能对话
+        </button>
+        <button class="nav-item" type="button" data-view="library">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5 10 3v16l-6 2.5v-16ZM10 3l7 2.5v16L10 19V3Zm7 2.5L21 4v16l-4 1.5v-16Z"/></svg>
+          文献知识库
+          <span class="nav-count" id="documentCount">2</span>
+        </button>
+      </nav>
+
+      <div class="history-section">
+        <div class="section-label"><span>最近会话</span><button id="clearHistoryButton" title="清空历史" aria-label="清空历史">清空</button></div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="usage-card">
+          <div class="usage-title"><span>知识库状态</span><span class="status-dot"></span></div>
+          <p>混合检索服务已连接</p>
+          <div class="usage-bar"><span></span></div>
+          <small>PGVector · RRF Fusion</small>
+        </div>
+        <button class="profile" type="button">
+          <span class="avatar">SU</span>
+          <span><strong>Researcher</strong><small>个人工作区</small></span>
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuButton" type="button" aria-label="打开菜单">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="mode-switcher" id="modeSwitcher" role="tablist" aria-label="对话模式">
+          <button class="mode active" type="button" role="tab" data-mode="chat"><span class="mode-icon">✦</span> 学术问答</button>
+          <button class="mode" type="button" role="tab" data-mode="rag"><span class="mode-icon">⌕</span> 知识库检索</button>
+          <button class="mode" type="button" role="tab" data-mode="agent"><span class="mode-icon">⌘</span> 深度研究</button>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" type="button" id="themeButton" aria-label="切换主题" title="切换主题">
+            <svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+          </button>
+          <button class="source-button" id="sourceButton" type="button">
+            <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Zm3 16a3 3 0 0 1 3-3h8"/></svg>
+            添加文献
+          </button>
+        </div>
+      </header>
+
+      <section class="chat-view" id="chatView">
+        <div class="messages" id="messages" aria-live="polite">
+          <section class="welcome" id="welcome">
+            <div class="eyebrow"><span></span> AI-POWERED RESEARCH</div>
+            <h1>把复杂文献，变成<br><em>清晰的研究脉络。</em></h1>
+            <p class="welcome-copy">检索、阅读、对比与归纳，让每一次提问都更接近可靠的答案。</p>
+            <div class="suggestion-grid">
+              <button class="suggestion" type="button" data-prompt="梳理当前知识库中文献的核心研究问题、方法和主要结论，并指出它们之间的联系。">
+                <span class="suggestion-icon amber"><svg viewBox="0 0 24 24"><path d="M5 19V8l7-4 7 4v11l-7-4-7 4Z"/></svg></span>
+                <span><strong>梳理研究脉络</strong><small>提炼问题、方法与结论</small></span>
+                <span class="arrow">↗</span>
+              </button>
+              <button class="suggestion" type="button" data-prompt="对比知识库中不同文献采用的研究方法，请用表格总结其优势、局限和适用场景。">
+                <span class="suggestion-icon blue"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M8 3v18M16 3v18"/></svg></span>
+                <span><strong>对比研究方法</strong><small>横向比较多篇文献</small></span>
+                <span class="arrow">↗</span>
+              </button>
+              <button class="suggestion" type="button" data-prompt="基于现有文献，识别尚未解决的问题和潜在研究空白，给出三个可执行的研究方向。">
+                <span class="suggestion-icon green"><svg viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8M15 7h5v5"/></svg></span>
+                <span><strong>发现研究空白</strong><small>寻找值得深入的方向</small></span>
+                <span class="arrow">↗</span>
+              </button>
+              <button class="suggestion" type="button" data-prompt="请根据知识库内容生成一份结构化文献综述提纲，包含背景、主题分类、争议点和未来展望。">
+                <span class="suggestion-icon violet"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6V3Zm8 0v5h5M9 12h7M9 16h7"/></svg></span>
+                <span><strong>生成综述提纲</strong><small>快速搭建写作框架</small></span>
+                <span class="arrow">↗</span>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="composer-wrap">
+          <form class="composer" id="chatForm">
+            <textarea id="messageInput" rows="1" maxlength="4000" placeholder="输入你的研究问题…" aria-label="输入研究问题"></textarea>
+            <div class="composer-bottom">
+              <div class="composer-tools">
+                <button type="button" id="attachButton" aria-label="上传文献" title="上传 PDF">
+                  <svg viewBox="0 0 24 24"><path d="m9 12 5.5-5.5a3 3 0 0 1 4.24 4.24L11 18.48a5 5 0 0 1-7.07-7.07l8.13-8.13"/></svg>
+                </button>
+                <span class="mode-hint" id="modeHint"><span></span> 通用模型</span>
+              </div>
+              <div class="composer-submit">
+                <span id="charCount">0 / 4000</span>
+                <button class="send-button" id="sendButton" type="submit" aria-label="发送消息">
+                  <svg viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 5v14"/></svg>
+                </button>
+              </div>
+            </div>
+          </form>
+          <p class="disclaimer">Suvia 可能会生成不准确的信息，重要结论请核对原始文献。</p>
+        </div>
+      </section>
+
+      <section class="library-view hidden" id="libraryView">
+        <div class="library-header">
+          <div><span class="page-kicker">KNOWLEDGE BASE</span><h2>文献知识库</h2><p>上传 PDF 后，系统会自动解析、分块并写入向量数据库。</p></div>
+          <button class="source-button primary" id="libraryUploadButton" type="button"><span>＋</span> 上传 PDF</button>
+        </div>
+        <div class="library-stats">
+          <div><span>已收录文献</span><strong>2</strong><small>PDF documents</small></div>
+          <div><span>检索方式</span><strong>Hybrid</strong><small>向量 + 关键词</small></div>
+          <div><span>融合算法</span><strong>RRF</strong><small>Top 8 results</small></div>
+        </div>
+        <div class="document-panel">
+          <div class="document-panel-title"><h3>最近文献</h3><span>2 个文件</span></div>
+          <div class="document-row"><span class="pdf-icon">PDF</span><div><strong>企业智能问答系统的设计与实现</strong><small>已完成向量化 · 可用于问答</small></div><span class="document-status">就绪</span></div>
+          <div class="document-row"><span class="pdf-icon">PDF</span><div><strong>RAG 测试文献</strong><small>已完成向量化 · 可用于问答</small></div><span class="document-status">就绪</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+    <div class="upload-modal">
+      <div class="modal-header"><div><span class="page-kicker">ADD SOURCE</span><h2 id="uploadTitle">添加到知识库</h2></div><button class="modal-close" id="closeModalButton" type="button" aria-label="关闭">×</button></div>
+      <label class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden>
+        <span class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 15v4h14v-4"/></svg></span>
+        <strong>拖放 PDF 到这里</strong>
+        <span>或点击浏览本地文件</span>
+        <small>单个文件最大 50 MB</small>
+      </label>
+      <div class="selected-file hidden" id="selectedFile"><span class="pdf-icon">PDF</span><div><strong id="selectedFileName"></strong><small id="selectedFileSize"></small></div><button id="removeFileButton" type="button">移除</button></div>
+      <div class="upload-progress hidden" id="uploadProgress"><div><span id="uploadStatus">正在上传并解析…</span><span id="uploadPercent">0%</span></div><div class="progress-track"><span id="progressBar"></span></div></div>
+      <button class="upload-submit" id="uploadSubmitButton" type="button" disabled>上传并构建索引</button>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <div class="sidebar-scrim hidden" id="sidebarScrim"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+[
+  {
+    "name": "ordinary explanation",
+    "request": "Explain dependency injection",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "current web search",
+    "request": "Search the web for current prices",
+    "intent": "WEB_RESEARCH",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING", "WEB_SEARCH"],
+    "clarification": false
+  },
+  {
+    "name": "search and fetch",
+    "request": "Search the web and inspect this URL",
+    "intent": "COMPOSITE_TASK",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING", "WEB_FETCH", "WEB_SEARCH"],
+    "clarification": false
+  },
+  {
+    "name": "pdf generation",
+    "request": "Generate a PDF report",
+    "intent": "DOCUMENT_GENERATION",
+    "risk": "WORKSPACE_WRITE",
+    "capabilities": ["MODEL_REASONING", "PDF_WRITE"],
+    "clarification": false
+  },
+  {
+    "name": "file read",
+    "request": "Read the file config.yml",
+    "intent": "FILE_TASK",
+    "risk": "READ_ONLY",
+    "capabilities": ["FILE_READ", "MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "file write",
+    "request": "Write this result to a file",
+    "intent": "FILE_TASK",
+    "risk": "WORKSPACE_WRITE",
+    "capabilities": ["FILE_WRITE", "MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "explicit shell execution",
+    "request": "Execute a shell command",
+    "intent": "CODE_EXECUTION",
+    "risk": "PRIVILEGED_EXECUTION",
+    "capabilities": ["MODEL_REASONING", "TERMINAL_EXECUTION"],
+    "clarification": false
+  },
+  {
+    "name": "shell explanation is not execution",
+    "request": "Tell me what a shell is",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "negated shell execution",
+    "request": "Do not execute a shell command; explain it",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "knowledge base question",
+    "request": "Answer from our knowledge base about the paper",
+    "intent": "KNOWLEDGE_QUESTION",
+    "risk": "READ_ONLY",
+    "capabilities": ["KNOWLEDGE_RETRIEVAL", "MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "vague chinese request",
+    "request": "帮我处理一下",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": true
+  },
+  {
+    "name": "download",
+    "request": "Download the resource",
+    "intent": "WEB_RESEARCH",
+    "risk": "WORKSPACE_WRITE",
+    "capabilities": ["MODEL_REASONING", "RESOURCE_DOWNLOAD"],
+    "clarification": false
+  },
+  {
+    "name": "negated web access",
+    "request": "不要联网，直接解释这个概念",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "negated file write",
+    "request": "Do not write a file; explain the format",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  },
+  {
+    "name": "pdf link extraction",
+    "request": "Read a PDF link",
+    "intent": "FILE_TASK",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING", "PDF_READ"],
+    "clarification": false
+  },
+  {
+    "name": "negated pdf generation",
+    "request": "不要生成 PDF，只解释报告结构",
+    "intent": "CONVERSATION",
+    "risk": "READ_ONLY",
+    "capabilities": ["MODEL_REASONING"],
+    "clarification": false
+  }
+]

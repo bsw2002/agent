@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SUVIA_JWT_ISSUER_URI}
+
+suvia:
+  security:
+    enabled: true
+  model-trace:
+    # 生产默认只保存哈希、Token、耗时和状态；确需内容评估时应先完成脱敏与合规审批。
+    capture-content: false
